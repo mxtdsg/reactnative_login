@@ -8,32 +8,33 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
-export default class Login extends React.Component {
+export default class Register extends React.Component {
 
     constructor(props) {
         super(props);
         this.state= {
             username: '',
             password: '',
+            password2: '',
         }
     }
 
     componentDidMount() {
-        this._loadInitialState().done();
+        // this._loadInitialState().done();
     }
 
-    _loadInitialState = async () => {
-        var value = await AsyncStorage.getItem('user');
-        if (value !== null) {
-            this.props.navigation.navigate('Profile'); 
-        }
-    }
+    // _loadInitialState = async () => {
+        // var value = await AsyncStorage.getItem('user');
+        // if (value !== null) {
+        //     this.props.navigation.navigate('Profile'); 
+        // }
+    // }
 
     render() {
         return (
             <KeyboardAvoidingView behavior='padding' style={styles.wrapper}>
                 <View style={styles.container}>
-                    <Text style={styles.header}>- LOGIN -</Text>
+                    <Text style={styles.header}>- REGISTER -</Text>
                     <TextInput
                         style={styles.textInput} placeholder='Username'
                         onChangeText={ (username) => this.setState({username}) }
@@ -44,17 +45,15 @@ export default class Login extends React.Component {
                         onChangeText={ (password) => this.setState({password}) }
                         secureTextEntry={true} udnerlineColorAndroid='transparent'
                     />
+                    <TextInput
+                        style={styles.textInput} placeholder='Repeat Password'
+                        onChangeText={ (password2) => this.setState({password2}) }
+                        secureTextEntry={true} udnerlineColorAndroid='transparent'
+                    />
                     <TouchableOpacity
                         style={styles.btn}
-                        onPress={this.login}>
-                        <Text>Log in </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.btn}
-                        onPress={()=>
-                            this.props.navigation.navigate('Register')}>
-                        <Text>Register</Text>
+                        onPress={this.signup}>
+                        <Text>Sign up </Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
@@ -62,9 +61,9 @@ export default class Login extends React.Component {
         );
     }
 
-    login = () => {
+    signup = () => {
 
-        fetch('http://YOUR_IP:3000/users/login', {
+        fetch('http://YOUR_IP:3000/users/register', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -73,16 +72,18 @@ export default class Login extends React.Component {
             body: JSON.stringify({
                 username: this.state.username,
                 password: this.state.password,
+                // password2: this.state.password2,
             })
         })
         
         .then((response) => response.json())
         .then ((res) => {
 
-            // alert(res.message);
+            alert(res.message);
 
             if(res.success === true) {
-                AsyncStorage.setItem('user', res.user);
+                alert('successssss!');
+                // AsyncStorage.setItem('user', res.user);
                 this.props.navigation.navigate('Profile');
             }
             else {
